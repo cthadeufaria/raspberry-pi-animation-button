@@ -4,7 +4,7 @@ import asyncio
 
 
 
-class Video:
+class Video():
     def __init__(self):
         self.video_path = VIDEO_PATH
         self.finished = False
@@ -13,39 +13,35 @@ class Video:
 
 
     async def play(self, filename):
-        while not self.finished:
-            self.cap = cv2.VideoCapture(self.video_path + filename)
+        cap = cv2.VideoCapture(self.video_path + filename)
 
-            if not self.cap.isOpened():
-                print("Error: Could not open video.")
-                exit()
+        if not cap.isOpened():
+            print("Error: Could not open video.")
+            exit()
 
-            while self.cap.isOpened():
-                ret, frame = self.cap.read()
-                if not ret:
-                    self.cap.release()
-                    if filename != 'idle.mp4':
-                        self.finished = True
-                    break
+        while cap.isOpened():
+            ret, frame = cap.read()
+            if not ret:
+                cap.release()
+                break
 
-                cv2.imshow('Video', frame)
+            cv2.imshow('Video', frame)
 
-                if (cv2.waitKey(25) & 0xFF == ord('q')):
-                    self.cap.release()
-                    if filename != 'idle.mp4':
-                        self.finished = True
-                    break
-            
-                await asyncio.sleep(1/30)
+            if (cv2.waitKey(25) & 0xFF == ord('q')):
+                cap.release()
+                break
+        
+            await asyncio.sleep(1/240)
 
 
     async def spin(self, filename):
         await self.play(filename)
-        await asyncio.sleep(1)
+        self.finished=True
 
 
-    async def idle_video(self):
-        self.finished = False
+    async def idle(self):
+        self.idle_task = asyncio.create_task(self.play('idle.mp4'))
         while True:
-            await self.play('idle.mp4')
-            await asyncio.sleep(1)
+            if self.idle_task.done() or self.idle_task.cancelled():
+                self.idle_task = asyncio.create_task(self.play('idle.mp4'))
+            await asyncio.run(self.idle_task)

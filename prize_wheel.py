@@ -1,5 +1,7 @@
 from statemachine import StateMachine, State
 import random
+import asyncio
+import sys
 
 from video import Video
 from button import Button
@@ -19,21 +21,22 @@ class PrizeWheel(StateMachine):
     def __init__(self, prizes):
         super().__init__()
         self.prizes = prizes
-        self.video = Video()
         self.button = Button()
+        self.video = Video()
 
     
-    def button_pressed(self):
+    async def button_pressed(self):
         return self.button.is_pressed
     
 
-    def video_finished(self):
+    async def video_finished(self):
         return self.video.finished
     
 
     async def on_enter_playing(self):
+        self.video.idle_task.cancel()
         await self.video.spin(random.choice(self.prizes))
-    
+
 
     async def on_enter_idle(self):
-        await self.video.idle_video()
+        await self.video.idle()

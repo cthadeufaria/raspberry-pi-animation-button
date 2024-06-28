@@ -7,12 +7,11 @@ from prize_wheel import PrizeWheel
 
 
 async def main():
-    state_machine = PrizeWheel(prizes=PRIZES)
+    sm = PrizeWheel(prizes=PRIZES)
 
     while True:
         try:
-            await state_machine.send("cycle")
-            asyncio.sleep(1/30)
+            await sm.send("cycle")
 
         except Exception as e:
             print(e)
