@@ -1,8 +1,7 @@
-from config import PRIZES
-
 import asyncio
 
 from prize_wheel import PrizeWheel
+from config import PRIZES
 
 
 

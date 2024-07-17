@@ -21,7 +21,7 @@ class PrizeWheel(StateMachine):
     def __init__(self, prizes):
         super().__init__()
         self.prizes = prizes
-        self.button = Button()
+        self.button = Button(debug=True)
         self.video = Video()
 
     
