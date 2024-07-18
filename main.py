@@ -1,12 +1,16 @@
 import asyncio
+import json
 
 from prize_wheel import PrizeWheel
-from config import PRIZES
+from config import PRIZES_FILE
 
 
 
 async def main():
-    sm = PrizeWheel(prizes=PRIZES)
+    with open(PRIZES_FILE, 'r') as f:
+        prizes = json.load(f)
+
+    sm = PrizeWheel(prizes=prizes)
 
     while True:
         try:

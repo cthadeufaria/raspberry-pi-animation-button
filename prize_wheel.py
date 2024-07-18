@@ -1,9 +1,11 @@
 from statemachine import StateMachine, State
 import random
 import asyncio
+import json
 
 from video import Video
 from button import Button
+from config import NO_PRIZE_PROB, PRIZES_FILE
 
 
 
@@ -21,7 +23,7 @@ class PrizeWheel(StateMachine):
     def __init__(self, prizes):
         super().__init__()
         self.prizes = prizes
-        self.button = Button(debug=False)
+        self.button = Button(debug=True)
         self.video = Video()
         self.idle_task = None
 
@@ -36,7 +38,15 @@ class PrizeWheel(StateMachine):
 
     async def on_enter_playing(self):
         self.idle_task.cancel()
-        await self.video.play(random.choice(self.prizes))
+        weights = [v for k, v in self.prizes.items() if k != "NO_PRIZE.mp4"]
+        self.prizes["NO_PRIZE.mp4"] = max(1, int(sum(weights) * NO_PRIZE_PROB / (1 - NO_PRIZE_PROB)))
+        keys = list(self.prizes.keys())
+        weights = list(self.prizes.values())
+        prize = random.choices(keys, weights=weights, k=1)[0]
+        self.prizes[prize] -= 1
+        with open(PRIZES_FILE, 'w') as f:
+            json.dump(self.prizes, f, indent=4)
+        await self.video.play(prize)
 
 
     async def on_enter_idle(self):

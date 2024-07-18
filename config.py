@@ -1,2 +1,8 @@
+# path to videos directory
 VIDEO_PATH="./videos/"
-PRIZES=["Prize_1.mp4", "Prize_1.mp4", "Prize_1.mp4"]
+
+# path to prizes json file
+PRIZES_FILE="./prizes.json"
+
+# probability of not winning a prize
+NO_PRIZE_PROB=0.3
