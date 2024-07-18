@@ -13,6 +13,8 @@ class Video():
 
 
     async def play(self, filename):
+        self.finished = False
+
         cap = cv2.VideoCapture(self.video_path + filename)
 
         if not cap.isOpened():
@@ -32,16 +34,5 @@ class Video():
                 break
         
             await asyncio.sleep(1/240)
-
-
-    async def spin(self, filename):
-        await self.play(filename)
-        self.finished=True
-
-
-    async def idle(self):
-        self.idle_task = asyncio.create_task(self.play('idle.mp4'))
-        while True:
-            if self.idle_task.done() or self.idle_task.cancelled():
-                self.idle_task = asyncio.create_task(self.play('idle.mp4'))
-            await asyncio.run(self.idle_task)
+        
+        self.finished = True
