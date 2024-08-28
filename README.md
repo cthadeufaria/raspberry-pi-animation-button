@@ -73,3 +73,7 @@ See the `LICENSE` file for details.
 ## Contact
 
 For questions or suggestions, please open an issue or contact [crls.thadeu@gmail.com](mailto:crls.thadeu@gmail.com).
+
+## Contribution
+
+Contributions are welcome! If you have any ideas, suggestions, or bug reports, please open an issue or submit a pull request.
