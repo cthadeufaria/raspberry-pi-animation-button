@@ -5,6 +5,7 @@ import json
 
 from video import Video
 from button import Button
+from led import Led
 from config import NO_PRIZE_PROB, PRIZES_FILE
 
 
@@ -25,6 +26,7 @@ class PrizeWheel(StateMachine):
         self.prizes = prizes
         self.button = Button(debug=False)
         self.video = Video()
+        self.led = Led()
         self.idle_task = None
 
     
@@ -37,6 +39,8 @@ class PrizeWheel(StateMachine):
     
 
     async def on_enter_playing(self):
+        self.led.off()
+        self.led.blink(0.2)
         self.idle_task.cancel()
         weights = [v for k, v in self.prizes.items() if k != "NO_PRIZE.mp4"]
         self.prizes["NO_PRIZE.mp4"] = max(1, int(sum(weights) * NO_PRIZE_PROB / (1 - NO_PRIZE_PROB)))
@@ -50,6 +54,8 @@ class PrizeWheel(StateMachine):
 
 
     async def on_enter_idle(self):
+        self.led.off()
+        self.led.blink(1)
         if self.idle_task is not None:
             self.idle_task.cancel()
         self.idle_task = asyncio.create_task(self.video.play('idle.mp4'))
