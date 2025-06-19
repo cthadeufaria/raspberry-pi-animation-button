@@ -1,4 +1,4 @@
-# Raspberry Pi Prize Selector
+# Raspberry Pi Prize Selector Video State Machine
 
 This application is designed to run on a Raspberry Pi 5. It uses a state machine to select a random prize from a list when a button is pressed, and plays a corresponding video using OpenCV. After the prize video is played, an idle video loops while waiting for the next button press.
 
